@@ -1,5 +1,5 @@
-test <- read.csv("C:/Users/M@R10/Downloads/test.csv")
-train <- read.csv("C:/Users/M@R10/Downloads/train.csv")
+test <- read.csv("...test.csv")
+train <- read.csv("...train.csv")
 
 test$Survived <- NA
 
