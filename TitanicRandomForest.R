@@ -37,9 +37,10 @@ combi$FamilyID <- factor(combi$FamilyID) # Convert var FamilyID into class 'fact
 train <- combi[1:891,]
 test <- combi[892:1309,] # Reassign original row ranges to train/test datasets 
 
-library(rpart)
+library(rpart) # Load Recursive Partitioning and Regression Trees library
 
 Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize, data=combi[!is.na(combi$Age),], method="anova") 
+# Insert missing elements in var Age with ANOVA-predicted scores using recursive partitioning function rpart
 
 combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
 
