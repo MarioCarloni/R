@@ -7,18 +7,23 @@ library(ROAuth)
 # Set SSL certs globally
 options(RCurlOptions = list(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl")))
 
+#Access
 reqURL <- "https://api.twitter.com/oauth/request_token"
 accessURL <- "https://api.twitter.com/oauth/access_token"
 authURL <- "https://api.twitter.com/oauth/authorize"
-consumerKey <- "KEY"
-consumerSecret <- "SECRET"
+consumerKey <- "7zLygd5r2NQG9UAigGOBtnKtV"
+consumerSecret <- "YbGE3zzYQrD46yZMEl7AbOFbnXzLsCX7Aa3SBZe8c76p15NsI9"
 twitCred <- OAuthFactory$new(consumerKey=consumerKey,
                              consumerSecret=consumerSecret,
                              requestURL=reqURL,
                              accessURL=accessURL,
                              authURL=authURL)
+#Log in
 twitCred$handshake()
+
+#Validate credentials
 registerTwitterOAuth(twitCred)
 
 #Search Tweets
-tweets <- searchTwitter("#rstats", n=100)
+tweets <- searchTwitter("World Cup", n=10)
+tweets
