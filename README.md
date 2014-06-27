@@ -1,4 +1,4 @@
 R
 =
 
-R scripts for Kaggle Competitions
+R scripts for Kaggle / Twitter
