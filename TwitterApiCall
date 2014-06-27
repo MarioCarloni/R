@@ -1,13 +1,11 @@
-library(twitteR)
-library(RJSONIO)
-library(bitops)
-library(RCurl)
-library(ROAuth)
+#Load multiple libraries simultaneously
+pkgs <- c('twitteR','RJSONIO','bitops','RCurl','ROAuth')
+lapply(pkgs, library, character.only=T)
 
 # Set SSL certs globally
 options(RCurlOptions = list(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl")))
 
-#Access
+#Access API
 reqURL <- "https://api.twitter.com/oauth/request_token"
 accessURL <- "https://api.twitter.com/oauth/access_token"
 authURL <- "https://api.twitter.com/oauth/authorize"
@@ -18,6 +16,7 @@ twitCred <- OAuthFactory$new(consumerKey=consumerKey,
                              requestURL=reqURL,
                              accessURL=accessURL,
                              authURL=authURL)
+                             
 #Log in
 twitCred$handshake()
 
@@ -25,5 +24,7 @@ twitCred$handshake()
 registerTwitterOAuth(twitCred)
 
 #Search Tweets
-tweets <- searchTwitter("World Cup", n=10)
-tweets
+tweets <- searchTwitter('@hadleywickham',lang='eng',since='2014-06-15',n=202)
+
+#Create data frame
+tweetdf <- do.call("rbind",lapply(tweets,as.data.frame))
