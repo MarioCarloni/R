@@ -2,7 +2,7 @@
 pkgs <- c('twitteR','RJSONIO','bitops','RCurl','ROAuth')
 lapply(pkgs, library, character.only=T)
 
-# Set SSL certs globally
+# Set global SSL certs 
 options(RCurlOptions = list(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl")))
 
 #Access API
