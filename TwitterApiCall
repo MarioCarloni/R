@@ -1,11 +1,11 @@
-#Load multiple libraries simultaneously
-pkgs <- c('twitteR','RJSONIO','bitops','RCurl','ROAuth')
+#Call packages
+pkgs <- c('twitteR','RJSONIO','bitops','RCurl','ROAuth','streamR')
 lapply(pkgs, library, character.only=T)
 
-# Set global SSL certs 
+# Set SSL certs globally
 options(RCurlOptions = list(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl")))
 
-#Access API
+#Access
 reqURL <- "https://api.twitter.com/oauth/request_token"
 accessURL <- "https://api.twitter.com/oauth/access_token"
 authURL <- "https://api.twitter.com/oauth/authorize"
@@ -16,7 +16,6 @@ twitCred <- OAuthFactory$new(consumerKey=consumerKey,
                              requestURL=reqURL,
                              accessURL=accessURL,
                              authURL=authURL)
-                             
 #Log in
 twitCred$handshake()
 
@@ -24,7 +23,19 @@ twitCred$handshake()
 registerTwitterOAuth(twitCred)
 
 #Search Tweets
-tweets <- searchTwitter('@hadleywickham',lang='eng',since='2014-06-15',n=202)
+tweets <- searchTwitter('Carloni OR Wilhite OR Gragnani',n=1000)
 
 #Create data frame
 tweetdf <- do.call("rbind",lapply(tweets,as.data.frame))
+
+#OR Search Streaming API
+filterStream(file.name = 'Tweets.json', track = 'Carloni,Wilhite,Gragnani', timeout = 60, oauth = twitCred)
+
+#Convert JSON to R list
+read <- readTweets('Tweets.json')
+
+#Convert R list to data frame
+TweetDF <- parseTweets('Tweets.json')
+
+#Write data frame to CSV
+write.csv(tweetdf,'Tweets.csv')
