@@ -9,8 +9,8 @@ options(RCurlOptions = list(cainfo = system.file("CurlSSL", "cacert.pem", packag
 reqURL <- "https://api.twitter.com/oauth/request_token"
 accessURL <- "https://api.twitter.com/oauth/access_token"
 authURL <- "https://api.twitter.com/oauth/authorize"
-consumerKey <- "KEY"
-consumerSecret <- "SECRET"
+consumerKey <- "7zLygd5r2NQG9UAigGOBtnKtV"
+consumerSecret <- "YbGE3zzYQrD46yZMEl7AbOFbnXzLsCX7Aa3SBZe8c76p15NsI9"
 twitCred <- OAuthFactory$new(consumerKey=consumerKey,
                              consumerSecret=consumerSecret,
                              requestURL=reqURL,
@@ -22,20 +22,17 @@ twitCred$handshake()
 #Validate credentials
 registerTwitterOAuth(twitCred)
 
-#Search Tweets
-tweets <- searchTwitter('Carloni OR Wilhite OR Gragnani',n=1000)
-
-#Create data frame
-tweetdf <- do.call("rbind",lapply(tweets,as.data.frame))
+#Create data frame from tweet search
+HistTweets <- twListToDF(searchTwitter('#rstats',n=1000))
 
 #OR Search Streaming API
-filterStream(file.name = 'Tweets.json', track = 'Carloni,Wilhite,Gragnani', timeout = 60, oauth = twitCred)
+filterStream(file.name = 'Tweets.json', track = 'dwarf fortress', timeout = 5, oauth = twitCred)
 
 #Convert JSON to R list
 read <- readTweets('Tweets.json')
 
-#Convert R list to data frame
-TweetDF <- parseTweets('Tweets.json')
+#Convert R list to data frame 
+StreamTweets <- parseTweets('Tweets.json')
 
-#Write data frame to CSV
-write.csv(tweetdf,'Tweets.csv')
+#Write either data frame (Histtweets or StreamTweets) to CSV
+write.csv(HistTweets,'Tweets.csv')
