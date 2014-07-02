@@ -28,7 +28,7 @@ HistTweets <- twListToDF(searchTwitter('#rstats',n=1000))
 #OR Search Streaming API
 filterStream(file.name = 'Tweets.json', track = 'dwarf fortress', timeout = 5, oauth = twitCred)
 
-#Convert JSON to R list
+#Convert streaming JSON to R list
 read <- readTweets('Tweets.json')
 
 #Convert R list to data frame 
