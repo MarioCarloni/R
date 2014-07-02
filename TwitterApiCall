@@ -36,3 +36,7 @@ StreamTweets <- parseTweets('Tweets.json')
 
 #Write either data frame (Histtweets or StreamTweets) to CSV
 write.csv(HistTweets,'Tweets.csv')
+
+#Send private tweet to myself
+sendTweet <- dmSend('I'm awesome!','Mario_Carloni')
+sendTweet
