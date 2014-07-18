@@ -14,6 +14,8 @@ LowLmt <- CalDay - 550
 
 #Caloric Deficit Range
 CalRng <- range(UpLmt,LowLmt)
+CalRng
 
 #Protein Intake in grams
 PrtInt <- weight * 1.2
+PrtInt
