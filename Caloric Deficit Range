@@ -1,0 +1,16 @@
+#Weight in Kg, Height in Cm
+weight <- 113
+height <- 186
+age <- 26
+
+#Total Caloric Requirement and exercise Co-Factor
+TCR <- (9.99*weight) + (6.25*height) - (4.92*age) - 161
+CoFctr <- 1.375
+
+#Calories/day with Upper and Lower Limit
+CalDay <- TCR*Ex
+UpLmt <- CalDay - 250
+LowLmt <- CalDay - 550
+
+#Caloric Deficit Range
+CalRng <- range(UpLmt,LowLmt)
