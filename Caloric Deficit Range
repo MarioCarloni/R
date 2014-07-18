@@ -3,7 +3,7 @@ weight <- 113
 height <- 186
 age <- 26
 
-#Total Caloric Requirement and exercise Co-Factor
+#Total Caloric Requirement and exercise Co-Factor (Mifflin - St. Jeor Equation)
 TCR <- (9.99*weight) + (6.25*height) - (4.92*age) - 161
 CoFctr <- 1.375
 
