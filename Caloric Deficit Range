@@ -3,7 +3,7 @@ weight <- 250
 height <- 6.1
 age <- 26
 
-#Convert lbs : kg & ft : in
+#Convert to kg and cm
 weightkg <- round(weight * .453592,2)
 heightcm <- round(height / .0328084,2)
 
