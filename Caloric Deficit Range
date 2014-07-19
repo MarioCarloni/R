@@ -12,8 +12,8 @@ CalDay <- TCR*CoFctr
 UpLmt <- CalDay - 250
 LowLmt <- CalDay - 550
 
-#Caloric Deficit Range
-CalRng <- range(UpLmt,LowLmt)
+#Caloric Deficit Range per meal @ 3 meals/day
+CalRng <- range(UpLmt,LowLmt) / 3
 CalRng
 
 #Protein Intake in grams
