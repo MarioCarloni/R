@@ -20,6 +20,6 @@ LowLmt <- CalDay - 550
 CalRng <- range(UpLmt,LowLmt) / 3
 CalRng
 
-#Protein Intake in grams
-PrtInt <- weightkg * 1.2
+#Protein Intake in grams per meal
+PrtInt <- weightkg * 1.2 / 3
 PrtInt
