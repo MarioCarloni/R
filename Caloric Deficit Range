@@ -1,4 +1,4 @@
-#Weight in Kg, Height in Cm
+#Weight in lbs, Height in ft
 weight <- 250
 height <- 6.1
 age <- 26
