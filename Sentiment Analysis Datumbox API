@@ -9,8 +9,8 @@ options(RCurlOptions = list(cainfo = system.file("CurlSSL", "cacert.pem", packag
 reqURL <- "https://api.twitter.com/oauth/request_token"
 accessURL <- "https://api.twitter.com/oauth/access_token"
 authURL <- "https://api.twitter.com/oauth/authorize"
-consumerKey <- "7zLygd5r2NQG9UAigGOBtnKtV"
-consumerSecret <- "YbGE3zzYQrD46yZMEl7AbOFbnXzLsCX7Aa3SBZe8c76p15NsI9"
+consumerKey <- "KEY" ####### Enter key here
+consumerSecret <- "SECRET" ####### Enter secret here
 twitCred <- OAuthFactory$new(consumerKey=consumerKey,
                              consumerSecret=consumerSecret,
                              requestURL=reqURL,
@@ -140,7 +140,7 @@ sentiment = rep(0, tweet_num)
 set.seed(1)
 for (i in 1:tweet_num)
 {
-  tmp = getSentiment(tweet_clean[i], '0f245a331377382be1f5dfb02179ca16')
+  tmp = getSentiment(tweet_clean[i], 'DATUMAPIKEY') ##### Insert Datumbox API key here
   
   tweet_df$sentiment[i] = tmp$sentiment
   tweet_df$subject[i] = tmp$subject
