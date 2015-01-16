@@ -24,7 +24,7 @@ twitCred$handshake()
 #Validate credentials
 registerTwitterOAuth(twitCred)
 
-setwd("C:/Users/john/Downloads/Twitter") # Set directory containing Pos/NegWords.txt
+setwd("C:/...") # Set directory containing Pos/NegWords.txt
 
 #Sentiment
 pos = scan('PosWords.txt', what = 'character', comment.char = ';')
