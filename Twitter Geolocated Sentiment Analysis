@@ -1,0 +1,138 @@
+#Call packages
+pkgs <- c('dplyr','twitteR','RJSONIO','RCurl','ROAuth','streamR')
+lapply(pkgs, library, character.only=T)
+
+# Set SSL certs globally
+options(RCurlOptions = list(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl")))
+
+#Access
+reqURL <- "https://api.twitter.com/oauth/request_token"
+accessURL <- "https://api.twitter.com/oauth/access_token"
+authURL <- "https://api.twitter.com/oauth/authorize"
+consumerKey <- "KEY" # Replace KEY with actual API key 
+consumerSecret <- "SECRET" # Replace secret with actual API secret 
+twitCred <- OAuthFactory$new(consumerKey=consumerKey,
+                             consumerSecret=consumerSecret,
+                             requestURL=reqURL,
+                             accessURL=accessURL,
+                             authURL=authURL)
+#Log in
+twitCred$handshake()
+####################### Run everything above this line first
+
+
+#Validate credentials
+registerTwitterOAuth(twitCred)
+
+setwd("C:/Users/john/Downloads/Twitter") # Set directory containing Pos/NegWords.txt
+
+#Sentiment
+pos = scan('PosWords.txt', what = 'character', comment.char = ';')
+neg = scan('NegWords.txt', what = 'character', comment.char = ';')
+
+pos.words = c(pos)
+neg.words = c(neg)
+
+# Score corpus using positive and negative weights (wordcount from pos/neg dict)
+score.sentiment = function(sentences, pos.words, neg.words, .progress='none')
+{
+  require(plyr)
+  require(stringr)
+  
+  # we got a vector of sentences. plyr will handle a list
+  # or a vector as an "l" for us
+  # we want a simple array ("a") of scores back, so we use
+  # "l" + "a" + "ply" = "laply":
+  scores = laply(sentences, function(sentence, pos.words, neg.words) {
+    
+    # clean up sentences with R's regex-driven global substitute, gsub():
+    sentence = gsub('[[:punct:]]', '', sentence)
+    sentence = gsub('[[:cntrl:]]', '', sentence)
+    sentence = gsub('\\d+', '', sentence)
+    # and convert to lower case:
+    sentence = tolower(sentence)
+    
+    # split into words. str_split is in the stringr package
+    word.list = str_split(sentence, '\\s+')
+    # sometimes a list() is one level of hierarchy too much
+    words = unlist(word.list)
+    
+    # compare our words to the dictionaries of positive & negative terms
+    pos.matches = match(words, pos.words)
+    neg.matches = match(words, neg.words)
+    
+    # match() returns the position of the matched term or NA
+    # we just want a TRUE/FALSE:
+    pos.matches = !is.na(pos.matches)
+    neg.matches = !is.na(neg.matches)
+    
+    # and conveniently enough, TRUE/FALSE will be treated as 1/0 by sum():
+    score = sum(pos.matches) - sum(neg.matches)
+    
+    return(score)
+  }, pos.words, neg.words, .progress=.progress )
+  
+  scores.df = data.frame(score=scores, text=sentences)
+  return(scores.df)
+}
+
+# Sub out regular expressions, lowercase, remove nulls
+clean.text <- function(some_txt)
+{
+  some_txt = gsub("(RT|via)((?:\\b\\W*@\\w+)+)", "", some_txt)
+  some_txt = gsub("@\\w+", "", some_txt)
+  some_txt = gsub("[[:punct:]]", "", some_txt)
+  some_txt = gsub("[[:digit:]]", "", some_txt)
+  some_txt = gsub("http\\w+", "", some_txt)
+  some_txt = gsub("[ \t]{2,}", "", some_txt)
+  some_txt = gsub("^\\s+|\\s+$", "", some_txt)
+  some_txt = gsub("Ã­ Â½Ã­Â²â", "", some_txt)
+  some_txt = gsub("<ed><U+00A0><U+00BD><ed><U+00B2><U+0096>","",some_txt)
+  # define "tolower error handling" function
+  try.tolower = function(x)
+  {
+    y = NA
+    try_error = tryCatch(tolower(x), error=function(e) e)
+    if (!inherits(try_error, "error"))
+      y = tolower(x)
+    return(y)
+  }
+  
+  some_txt = sapply(some_txt, try.tolower)
+  some_txt = some_txt[some_txt != ""]
+  names(some_txt) = NULL
+  return(some_txt)
+}
+
+#Create data frame from tweet search
+Tags <- "I'm at, I'm in, I'm on"
+
+filterStream(file.name='checkins.json',track=Tags, language='en',timeout=120,oauth=twitCred, verbose=T)
+
+tweetdf <- parseTweets('checkins.json')
+
+
+# use clean.text function over tweet corpus
+clean <- clean.text(tweetdf$text)
+
+# Create calcuated column: 
+# Find any sustring in any column
+# Classify each row containing substring in the new column.
+tweetdf$religion <- ifelse(grepl("allah", tweetdf$text, ignore.case = T), "Muslim", 
+                             ifelse(grepl("god", tweetdf$text, ignore.case = T), "Christian", "?")) # Text
+
+sent <- score.sentiment(clean,pos,neg) # Use score.sentiment over 'cleaned' corpus 
+
+tweetdf$score <- sent$score # Insert every score into new tweetdf column
+
+tweetdf$created_at <- substr(tweetdf$created_at, 12, 19) # Leave only HH:MM:SS
+
+# Filter out lat/long null rows
+# Create 2 calculated columns
+# Select existing and new columns to create new table tweetdf_coord
+tweetdf_coord <- tweetdf %>%
+  filter(!is.na(lat),!is.na(lon)) %>%
+  mutate(avglat = (lat + place_lat) / 2, avglon = (lon + place_lon) / 2) %>%
+  select(text,avglat,avglon,created_at, score)
+
+write.csv(tweetdf_coord,'output.csv')
