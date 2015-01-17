@@ -116,16 +116,16 @@ tweetdf <- parseTweets('checkins.json')
 clean <- clean.text(tweetdf$text)
 
 # Create calcuated column: 
-# Find any sustring in any column
-# Classify each row containing substring in the new column.
-tweetdf$religion <- ifelse(grepl("allah", tweetdf$text, ignore.case = T), "Muslim", 
-                             ifelse(grepl("god", tweetdf$text, ignore.case = T), "Christian", "?")) # Text
+# Find substring 
+# Classify substring then place in new column.
+tweetdf$religion <- ifelse(grepl("restaurant", tweetdf$text, ignore.case = T), "Eat", 
+                             ifelse(grepl("bar", tweetdf$text, ignore.case = T), "Drink", "?")) # Text
 
 sent <- score.sentiment(clean,pos,neg) # Use score.sentiment over 'cleaned' corpus 
 
 tweetdf$score <- sent$score # Insert every score into new tweetdf column
 
-tweetdf$created_at <- substr(tweetdf$created_at, 12, 19) # Leave only HH:MM:SS
+tweetdf$created_at <- substr(tweetdf$created_at, 12, 19) # Leave only HH:MM:SS timestamp
 
 # Filter out lat/long null rows
 # Create 2 calculated columns
