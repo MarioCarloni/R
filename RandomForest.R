@@ -42,34 +42,21 @@ library(rpart) # Load Recursive Partitioning and Regression Trees library
 Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize, data=combi[!is.na(combi$Age),], method="anova") 
 # Insert missing elements in var Age with ANOVA-predicted scores using recursive partitioning function rpart
 
-combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
+combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),]) # Fill non-null containing rows with predicted scores
 
-combi$Embarked[c(62,830)] = 'S'
-
-combi$Embarked <- factor(combi$Embarked)
-
-combi$Fare[1044] <- median(combi$Fare, na.rm=T)
-
-combi$FamilyID2 <- combi$FamilyID
-
-combi$FamilyID2 <- as.character(combi$FamilyID2)
-
-combi$FamilyID2[combi$FamilySize <= 3] <- 'Small'
-
-combi$FamilyID2 <- factor(combi$FamilyID2)
-
-train <- combi[1:891,]
+train <- combi[1:891,] # Split into train/test sets
 test <- combi[892:1309,]
 
 library(party)
 
-set.seed(415)
+set.seed(415) # Random number generator seed
 
+# Conditioned inference tree 
 fit <- cforest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID, data = train, controls=cforest_unbiased(ntree=2000, mtry=3))
 
 
-Prediction <- predict(fit, test, OOB=T, type='response') 
+Prediction <- predict(fit, test, OOB=T, type='response') # Predict using cforest , display Out-of-bag error for predictions
 
-submit <- data.frame(PassengerId = test$PassengerId, Survived = Prediction) 
+submit <- data.frame(PassengerId = test$PassengerId, Survived = Prediction) # New dataframe with predicted scores
 
 write.csv(submit, file = 'ConditionalForest.csv', row.names=F) 
