@@ -26,10 +26,11 @@ registerTwitterOAuth(twitCred)
 
 setwd("C:/...") # Set directory containing Pos/NegWords.txt
 
-#Sentiment
+# Dicts
 pos = scan('PosWords.txt', what = 'character', comment.char = ';')
 neg = scan('NegWords.txt', what = 'character', comment.char = ';')
 
+# Vectorize
 pos.words = c(pos)
 neg.words = c(neg)
 
@@ -39,34 +40,30 @@ score.sentiment = function(sentences, pos.words, neg.words, .progress='none')
   require(plyr)
   require(stringr)
   
-  # we got a vector of sentences. plyr will handle a list
-  # or a vector as an "l" for us
-  # we want a simple array ("a") of scores back, so we use
-  # "l" + "a" + "ply" = "laply":
+  # List conversion
   scores = laply(sentences, function(sentence, pos.words, neg.words) {
     
-    # clean up sentences with R's regex-driven global substitute, gsub():
+    # De-regex
     sentence = gsub('[[:punct:]]', '', sentence)
     sentence = gsub('[[:cntrl:]]', '', sentence)
     sentence = gsub('\\d+', '', sentence)
-    # and convert to lower case:
+    # Lower case:
     sentence = tolower(sentence)
     
-    # split into words. str_split is in the stringr package
+    # split into words
     word.list = str_split(sentence, '\\s+')
-    # sometimes a list() is one level of hierarchy too much
+    # De-nest
     words = unlist(word.list)
     
-    # compare our words to the dictionaries of positive & negative terms
+    # Dict comparison
     pos.matches = match(words, pos.words)
     neg.matches = match(words, neg.words)
     
-    # match() returns the position of the matched term or NA
-    # we just want a TRUE/FALSE:
+    # Boolean 1/0
     pos.matches = !is.na(pos.matches)
     neg.matches = !is.na(neg.matches)
     
-    # and conveniently enough, TRUE/FALSE will be treated as 1/0 by sum():
+    # Sum boolean
     score = sum(pos.matches) - sum(neg.matches)
     
     return(score)
@@ -76,7 +73,7 @@ score.sentiment = function(sentences, pos.words, neg.words, .progress='none')
   return(scores.df)
 }
 
-# Sub out regular expressions, lowercase, remove nulls
+# Sub out furter regular expressions, lowercase, remove nulls
 clean.text <- function(some_txt)
 {
   some_txt = gsub("(RT|via)((?:\\b\\W*@\\w+)+)", "", some_txt)
@@ -91,7 +88,7 @@ clean.text <- function(some_txt)
   # define "tolower error handling" function
   try.tolower = function(x)
   {
-    y = NA
+    y = NA #
     try_error = tryCatch(tolower(x), error=function(e) e)
     if (!inherits(try_error, "error"))
       y = tolower(x)
@@ -118,7 +115,7 @@ clean <- clean.text(tweetdf$text)
 # Create calcuated column: 
 # Find substring 
 # Classify substring then place in new column.
-tweetdf$religion <- ifelse(grepl("restaurant", tweetdf$text, ignore.case = T), "Eat", 
+tweetdf$placeType <- ifelse(grepl("restaurant", tweetdf$text, ignore.case = T), "Eat", 
                              ifelse(grepl("bar", tweetdf$text, ignore.case = T), "Drink", "?")) # Text
 
 sent <- score.sentiment(clean,pos,neg) # Use score.sentiment over 'cleaned' corpus 
