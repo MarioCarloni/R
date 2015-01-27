@@ -1,7 +1,9 @@
+calRng <- function(weight,height,age) {
+
 #Weight in lbs, Height in ft
-weight <- 250
-height <- 6.1
-age <- 26
+weight <- as.numeric(weight)
+height <- as.numeric(height)
+age <- as.numeric(age)
 
 #Convert to kg and cm
 weightkg <- round(weight * .453592,2)
@@ -16,10 +18,11 @@ CalDay <- TCR*CoFctr
 UpLmt <- CalDay - 250
 LowLmt <- CalDay - 550
 
-#Caloric Deficit Range per meal @ 3 meals/day
-CalRng <- range(UpLmt,LowLmt) / 3
-CalRng
-
 #Protein Intake in grams per meal
 PrtInt <- weightkg * 1.2 / 3
 PrtInt
+
+# Return upper/lower caloric range and protein intake @ 3 meals/day
+return(cat("Lower:",round(LowLmt/3),"\nUpper:",round(UpLmt/3),"\nProtein:",round(PrtInt)))
+
+}
