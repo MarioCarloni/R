@@ -1,36 +1,47 @@
 calRng <- function() {
-
-#Weight in lbs, Height in ft
-weight <- as.numeric(readline(prompt = "Enter your weight (lbs):"))
-height <- as.numeric(readline(prompt = "Enter your height (ft):"))
-age <- as.numeric(readline(prompt = "Enter your age (yrs):"))
-
-
-
-#Convert to kg and cm
-weightkg <- round(weight * .45,2)
-heightcm <- round(height * 30.48,2)
-heightm <- round(heightcm * .01,2) 
-
-#Total Caloric Requirement and exercise Co-Factor (Mifflin - St. Jeor Equation)
-TCR <- (9.99*weightkg) + (6.25*heightcm) - (4.92*age) - 161
-CoFctr <- 1.375
-
-#Calories/day with Upper and Lower Limit
-CalDay <- TCR*CoFctr
-UpLmt <- CalDay - 250
-LowLmt <- CalDay - 550
-
-#Protein Intake in grams per meal
-PrtInt <- weightkg * 1.2
-
-BMI <- round(weightkg / (heightm^2),2)
-
-return(cat("Calorie and Protein Range per Meal:",
-           "\nLower:",round(LowLmt/3),
-           "\nUpper:",round(UpLmt/3),
-           "\nProtein:",round(PrtInt/3),
-           "\nBMI:",BMI,
-           ifelse(BMI < 25 & BMI > 19,"\nYou're healthy!","\nYou're obese!")))
-
+  
+  #User input
+  weight <- as.numeric(
+    readline(
+      prompt = "Enter your weight (lbs):"))
+  
+  height <- as.numeric(
+    readline(
+      prompt = "Enter your height (ft):"))
+  
+  age <- as.numeric(
+    readline(
+      prompt = "Enter your age (yrs):"))
+  
+  #Convert to kg, cm, and m
+  weightkg <- round(weight * .45,2)
+  heightcm <- round(height * 30.48,2)
+  heightm <- round(heightcm * .01,2) 
+  
+  #Total Caloric Requirement and exercise Co-Factor (Mifflin - St. Jeor Equation)
+  TCR <- (9.99*weightkg) + (6.25*heightcm) - (4.92*age) - 161
+  CoFctr <- 1.375
+  
+  #Calories/day with Upper and Lower Limit
+  CalDay <- TCR*CoFctr
+  UpLmt <- CalDay - 250
+  LowLmt <- CalDay - 550
+  
+  #Protein Intake in grams per meal
+  PrtInt <- weightkg * 1.2
+  
+  BMI <- round(weightkg / (heightm^2),2)
+  
+  return(
+    cat(
+      "Calorie and Protein Range per Meal:",
+      "\nLower:",round(LowLmt/3),
+      "\nUpper:",round(UpLmt/3),
+      "\nProtein:",round(PrtInt/3),
+      "\nBMI:",BMI,
+      ifelse(
+        BMI < 25 & BMI > 19,
+        "\nYou're healthy!",
+        "\nYou're obese!")))
+  
 }
