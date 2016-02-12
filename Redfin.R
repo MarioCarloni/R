@@ -3,7 +3,7 @@ library(plyr)
 
 setwd('C:/RedfinHousingDatasets')
 
-temp = list.files(pattern="*.csv")
+temp <- list.files(pattern="*.csv")
 tables <- lapply(temp, read.csv)
 full <- do.call(rbind, tables)
 
