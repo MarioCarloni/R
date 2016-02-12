@@ -26,12 +26,12 @@ for (i in statelist) {
     mutate(percapita.income = `Avg. Income/H/hold` / Population) %>%
     arrange(desc(percapita.income))
   
-  citylist <- head(table1$`Location (# Zip Codes)`,10)
+  topten <- head(table1$`Location (# Zip Codes)`,10)
   
   
-  for (loc in citylist) 
+  for (city in topten) 
     {
-    browseURL(paste0('https://www.google.com/#q=',loc,' redfin'))
+    browseURL(paste0('https://www.google.com/#q=',city,' redfin'))
   }
 
 }
