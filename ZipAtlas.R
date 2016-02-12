@@ -29,8 +29,7 @@ for (i in statelist) {
   citylist <- head(table1$`Location (# Zip Codes)`,10)
   
   
-  for (loc in citylist) 
-    {
+  for (loc in citylist) {
     browseURL(paste0('https://www.google.com/#q=',loc,' redfin'))
   }
 
