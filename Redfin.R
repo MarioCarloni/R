@@ -12,7 +12,7 @@ df <- full %>%
   mutate(ppsf = LIST.PRICE / SQFT) %>%
   mutate(Address = paste(ADDRESS,CITY,STATE)) %>%
   arrange(ppsf) %>%
-  select(Address,LIST.PRICE,SQFT,ppsf)
+  select(Address)
 
 addressList <- head(df$Address,10)
 
