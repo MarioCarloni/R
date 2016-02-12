@@ -23,15 +23,15 @@ for (i in statelist) {
   
   table1 <- table %>% 
     filter(`Avg. Income/H/hold` >= 70000,`Avg. Income/H/hold` <= 106000, Population >= 1000, Population <= 15000) %>%
-    mutate(percapita.income = `Avg. Income/H/hold` / Population) %>%
-    arrange(desc(percapita.income))
+    mutate(percapita.index = `Avg. Income/H/hold` / Population) %>%
+    arrange(desc(percapita.index))
   
-  topten <- head(table1$`Location (# Zip Codes)`,10)
+  citylist <- head(table1$`Location (# Zip Codes)`,10)
   
   
-  for (city in topten) 
+  for (loc in citylist) 
     {
-    browseURL(paste0('https://www.google.com/#q=',city,' redfin'))
+    browseURL(paste0('https://www.google.com/#q=',loc,' redfin'))
   }
 
 }
