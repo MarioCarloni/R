@@ -5,7 +5,7 @@ statelist <- c('ma','ri')
 
 for (i in statelist) {
 
-  url <- read_html(paste0("http://zipatlas.com/us/",'ri',"/city-comparison/median-household-income.htm"))
+  url <- read_html(paste0("http://zipatlas.com/us/",i,"/city-comparison/median-household-income.htm"))
   
   table <- url %>%
     html_nodes("table") %>% 
