@@ -70,7 +70,7 @@ score.sentiment = function(sentences, pos.words, neg.words, .progress='none') {
     sentences, 
     function(sentence, pos.words, neg.words) {
       
-      # De-regex
+      # Remove punctuation and control characters
       sentence = gsub('[[:punct:]]', '', sentence)
       sentence = gsub('[[:cntrl:]]', '', sentence)
       sentence = gsub('\\d+', '', sentence)
